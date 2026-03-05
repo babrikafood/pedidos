@@ -81,20 +81,20 @@ body{
 
 /* HERO */
 .hero{
-  display:grid;
-  grid-template-columns: 1.2fr .8fr;
-  gap:16px;
-  background: rgba(0,0,0,.2);
+  display:flex; flex-wrap:wrap; gap:20px;
+  background: var(--logo-black);
+  padding:20px;
   border-radius: var(--radius);
-  padding:16px;
   box-shadow: var(--shadow);
+  color: var(--highlight);
 }
-.hero h1{margin:0 0 8px; font-size:28px; color:var(--highlight);}
-.hero p{margin:0 0 10px; color:var(--muted);}
+.hero h1{font-size:32px; font-weight:700;}
+.hero p{font-size:16px; color:var(--muted);}
 .hero-img{
-  border-radius: var(--radius);
+  flex:1 1 300px;
+  height:200px;
   background:url("https://picsum.photos/600/450?food") center/cover no-repeat;
-  min-height:160px;
+  border-radius: var(--radius);
 }
 
 /* CHIPS / CATEGORIAS */
