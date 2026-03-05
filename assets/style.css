@@ -171,7 +171,7 @@ a{text-decoration:none; color:inherit;}
   background: rgba(255,255,255,.05); color: var(--text);
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== RESPONSIVE finasl===== */
 @media(max-width:980px){
   .layout{grid-template-columns:1fr;}
   .grid{grid-template-columns:repeat(2,1fr);}
