@@ -1,133 +1,99 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pedidos | Comida Árabe</title>
-  <link rel="stylesheet" href="assets/style.css" />
-
-  <!-- jQuery CDN -->
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BabriKa | Comida Árabe</title>
+<link rel="stylesheet" href="assets/style.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">🧆</div>
-      <div>
-        <div class="brand-title">Comida Árabe</div>
-        <div class="brand-sub">Pedidos rápidos • Delivery</div>
+
+<!-- SPLASH ANIMADO -->
+<div id="splash">
+  <img src="assets/Logo FINAL.png" alt="BabriKa Logo">
+</div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div id="main" class="hidden">
+
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/Logo FINAL.png" alt="Logo" class="logo-small">
+    <div class="brand-text">
+      <div class="brand-title">BabriKa</div>
+      <div class="brand-sub">Pedidos rápidos • Delivery</div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <input id="search" type="search" placeholder="Buscar...">
+    <button id="btnClear" class="btn ghost">Limpiar</button>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="content">
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Pedí rápido, ¡sin esperar!</h1>
+        <p>Seleccioná tus platos, confirmá y se abre WhatsApp con tu pedido listo.</p>
+      </div>
+      <div class="hero-img" aria-hidden="true"></div>
+    </div>
+
+    <div class="section-head">
+      <h2>Menú</h2>
+      <div class="chips">
+        <button class="chip active" data-filter="all">Todo</button>
+        <button class="chip" data-filter="shawarma">Shawarma</button>
+        <button class="chip" data-filter="falafel">Falafel</button>
+        <button class="chip" data-filter="entradas">Entradas</button>
+        <button class="chip" data-filter="bebidas">Bebidas</button>
       </div>
     </div>
 
-    <div class="search-wrap">
-      <input id="search" type="search" placeholder="Buscar shawarma, falafel, hummus..." />
-      <button id="btnClear" class="btn ghost" type="button">Limpiar</button>
+    <div id="grid" class="grid"></div>
+  </section>
+
+  <aside class="cart">
+    <div class="cart-head">
+      <h3>Tu pedido</h3>
+      <button id="btnEmpty" class="btn ghost">Vaciar</button>
     </div>
-  </header>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-summary">
+      <div class="row"><span>Subtotal</span><strong id="subtotal">$0</strong></div>
+      <div class="row"><span>Envío</span><strong id="shipping">$0</strong></div>
+      <div class="row total"><span>Total</span><strong id="total">$0</strong></div>
+    </div>
+    <div class="checkout">
+      <h4>Datos de envío</h4>
+      <label>Nombre<input id="cName" type="text"></label>
+      <label>Dirección<input id="cAddr" type="text"></label>
+      <label>Notas<textarea id="cNotes"></textarea></label>
+      <label>Pago
+        <select id="cPay">
+          <option value="Efectivo">Efectivo</option>
+          <option value="Transferencia">Transferencia</option>
+          <option value="Pago móvil">Pago móvil</option>
+        </select>
+      </label>
+      <label><input type="checkbox" id="cDelivery" checked> Delivery</label>
+      <button id="btnWhatsApp" class="btn primary">Enviar por WhatsApp</button>
+    </div>
+  </aside>
+</main>
 
-  <main class="layout">
-    <section class="content">
-      <div class="hero">
-        <div class="hero-text">
-          <h1>Pedí rápido (sin negociar con el hambre)</h1>
-          <p>Elegí tus platos, confirmá y se abre WhatsApp con el pedido listo para enviar.</p>
-          <div class="hero-tags">
-            <span class="tag">🔥 Shawarma</span>
-            <span class="tag">🥙 Falafel</span>
-            <span class="tag">🫓 Hummus</span>
-            <span class="tag">🚀 Delivery</span>
-          </div>
-        </div>
-        <div class="hero-img" aria-hidden="true"></div>
-      </div>
+</div>
 
-      <div class="section-head">
-        <h2>Menú</h2>
-        <div class="chips">
-          <button class="chip active" data-filter="all">Todo</button>
-          <button class="chip" data-filter="shawarma">Shawarma</button>
-          <button class="chip" data-filter="falafel">Falafel</button>
-          <button class="chip" data-filter="entradas">Entradas</button>
-          <button class="chip" data-filter="bebidas">Bebidas</button>
-        </div>
-      </div>
+<script src="assets/app.js"></script>
+<script>
+window.APP_CONFIG = {
+  whatsappNumber: "584144259594",
+  currencySymbol: "$",
+  shippingFlat: 3
+};
+</script>
 
-      <div id="grid" class="grid"></div>
-    </section>
-
-    <aside class="cart">
-      <div class="cart-head">
-        <h3>Tu pedido</h3>
-        <button id="btnEmpty" class="btn ghost" type="button">Vaciar</button>
-      </div>
-
-      <div id="cartItems" class="cart-items"></div>
-
-      <div class="cart-summary">
-        <div class="row">
-          <span>Subtotal</span>
-          <strong id="subtotal">$0</strong>
-        </div>
-        <div class="row">
-          <span>Envío</span>
-          <strong id="shipping">$0</strong>
-        </div>
-        <div class="row total">
-          <span>Total</span>
-          <strong id="total">$0</strong>
-        </div>
-      </div>
-
-      <div class="checkout">
-        <h4>Datos para el envío</h4>
-        <div class="form">
-          <label>
-            Nombre
-            <input id="cName" type="text" placeholder="Tu nombre" />
-          </label>
-          <label>
-            Dirección
-            <input id="cAddr" type="text" placeholder="Calle, número, referencia" />
-          </label>
-          <label>
-            Notas
-            <textarea id="cNotes" rows="2" placeholder="Sin cebolla, extra salsa, etc."></textarea>
-          </label>
-          <label>
-            Pago
-            <select id="cPay">
-              <option value="Efectivo">Efectivo</option>
-              <option value="Transferencia">Transferencia</option>
-              <option value="Pago móvil">Pago móvil</option>
-            </select>
-          </label>
-
-          <label class="toggle">
-            <input id="cDelivery" type="checkbox" checked />
-            <span>Delivery</span>
-          </label>
-
-          <button id="btnWhatsApp" class="btn primary" type="button">
-            Enviar por WhatsApp
-          </button>
-
-          <p class="mini">
-            *Se abre WhatsApp con el mensaje armado. Vos solo apretás “Enviar”.
-          </p>
-        </div>
-      </div>
-    </aside>
-  </main>
-
-  <script>
-    // CONFIGURACIÓN RÁPIDA
-    window.APP_CONFIG = {
-      whatsappNumber: "584144259594", // <-- cambiá por tu número (sin +, sin espacios)
-      currencySymbol: "$",
-      shippingFlat: 3 // 0 si no cobrás envío fijo
-    };
-  </script>
-
-  <script src="assets/app.js"></script>
 </body>
 </html>
