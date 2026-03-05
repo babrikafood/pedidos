@@ -27,8 +27,9 @@ Luego abrir `http://localhost:4173`.
 - Buscador y filtros por categoría generados desde el JSON.
 - Carrito persistente en `localStorage`.
 - Datos del cliente persistidos en `localStorage`.
-- Cálculo automático de subtotal y total.
+- Cálculo automático de subtotal, delivery y total.
 - Validación básica de checkout.
+- Cálculo de delivery por distancia con OpenStreetMap/Leaflet + Nominatim + OSRM (origen: El Trigal Sur).
 - Envío del pedido a WhatsApp con mensaje estructurado.
 
 ## Sin backend
