@@ -24,6 +24,10 @@
       originCoords: null,
       destinationCoords: null
     }
+      pay: "Efectivo",
+      delivery: true
+    }),
+    filter: "all"
   };
 
   const refs = {
