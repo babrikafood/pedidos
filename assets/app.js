@@ -5,18 +5,10 @@
     cart: loadJSON(cfg.cartStorageKey, {}),
     customer: loadJSON(cfg.customerStorageKey, {
       name: "",
-      address: "",
       notes: "",
-      pay: "Efectivo",
-      delivery: true
+      pay: "Efectivo"
     }),
-    filter: "all",
-    shipping: {
-      mode: "fallback",
-      amount: cfg.fallbackShippingFlat,
-      km: null,
-      message: "Envío base aplicado"
-    }
+    filter: "all"
   };
 
   const refs = {
@@ -29,16 +21,12 @@
     btnClear: byId("btnClear"),
     cartItems: byId("cartItems"),
     subtotal: byId("subtotal"),
-    shipping: byId("shipping"),
-    shippingMeta: byId("shippingMeta"),
     total: byId("total"),
     btnEmpty: byId("btnEmpty"),
     checkout: byId("checkout"),
     cName: byId("cName"),
-    cAddr: byId("cAddr"),
     cNotes: byId("cNotes"),
-    cPay: byId("cPay"),
-    cDelivery: byId("cDelivery")
+    cPay: byId("cPay")
   };
 
   init();
@@ -54,7 +42,6 @@
       state.products = await res.json();
       renderChips();
       renderGrid();
-      await maybeRecalculateShipping();
       renderCart();
     } catch (err) {
       refs.grid.innerHTML = `<p class="empty">Error cargando menú: ${err.message}</p>`;
@@ -95,12 +82,9 @@
     });
 
     refs.checkout.addEventListener("input", persistCustomer);
-    refs.cAddr.addEventListener("change", maybeRecalculateShipping);
-    refs.cDelivery.addEventListener("change", maybeRecalculateShipping);
-
-    refs.checkout.addEventListener("submit", async (event) => {
+    refs.checkout.addEventListener("submit", (event) => {
       event.preventDefault();
-      await sendWhatsApp();
+      sendWhatsApp();
     });
   }
 
@@ -186,8 +170,7 @@
 
   function totals() {
     const sub = cartLines().reduce((sum, line) => sum + line.line, 0);
-    const ship = refs.cDelivery.checked ? state.shipping.amount : 0;
-    return { sub, ship, total: sub + ship };
+    return { sub, total: sub };
   }
 
   function renderCart() {
@@ -215,109 +198,7 @@
 
     const t = totals();
     refs.subtotal.textContent = money(t.sub);
-    refs.shipping.textContent = money(t.ship);
-    refs.shippingMeta.textContent = state.shipping.message || "";
     refs.total.textContent = money(t.total);
-  }
-
-  async function maybeRecalculateShipping() {
-    persistCustomer();
-
-    if (!refs.cDelivery.checked) {
-      state.shipping = {
-        mode: "pickup",
-        amount: 0,
-        km: 0,
-        message: "Retiro en local"
-      };
-      renderCart();
-      return;
-    }
-
-    const addr = refs.cAddr.value.trim();
-    if (!addr) {
-      state.shipping = {
-        mode: "fallback",
-        amount: cfg.fallbackShippingFlat,
-        km: null,
-        message: "Ingresa dirección para calcular el envío"
-      };
-      renderCart();
-      return;
-    }
-
-    state.shipping = {
-      mode: "loading",
-      amount: cfg.fallbackShippingFlat,
-      km: null,
-      message: "Calculando distancia desde El Trigal Sur..."
-    };
-    renderCart();
-
-    try {
-      const [origin, dest] = await Promise.all([
-        geocode(cfg.baseAddress),
-        geocode(`${addr}, Valencia, Venezuela`)
-      ]);
-
-      const km = await getDrivingDistanceKm(origin, dest);
-      const roundedKm = Math.max(1, Math.ceil(km));
-      const amount = roundedKm * cfg.deliveryEuroPerKm;
-
-      state.shipping = {
-        mode: "distance",
-        amount,
-        km: roundedKm,
-        message: `Envío calculado: ${roundedKm} km x €${cfg.deliveryEuroPerKm}`
-      };
-    } catch {
-      state.shipping = {
-        mode: "fallback",
-        amount: cfg.fallbackShippingFlat,
-        km: null,
-        message: `No se pudo calcular la distancia. Se usa envío base ${money(cfg.fallbackShippingFlat)}.`
-      };
-    }
-
-    renderCart();
-  }
-
-  async function geocode(query) {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
-    const res = await fetch(url, {
-      headers: { "Accept-Language": "es" }
-    });
-
-    if (!res.ok) {
-      throw new Error("Error geocoding");
-    }
-
-    const data = await res.json();
-    if (!data.length) {
-      throw new Error("No location");
-    }
-
-    return {
-      lat: Number(data[0].lat),
-      lon: Number(data[0].lon)
-    };
-  }
-
-  async function getDrivingDistanceKm(origin, destination) {
-    const url = `https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destination.lon},${destination.lat}?overview=false`;
-    const res = await fetch(url);
-
-    if (!res.ok) {
-      throw new Error("Error routing");
-    }
-
-    const data = await res.json();
-    const route = data?.routes?.[0];
-    if (!route || !route.distance) {
-      throw new Error("No route");
-    }
-
-    return route.distance / 1000;
   }
 
   function persistCart() {
@@ -326,49 +207,37 @@
 
   function hydrateCustomer() {
     refs.cName.value = state.customer.name;
-    refs.cAddr.value = state.customer.address;
     refs.cNotes.value = state.customer.notes;
     refs.cPay.value = state.customer.pay;
-    refs.cDelivery.checked = Boolean(state.customer.delivery);
   }
 
   function persistCustomer() {
     state.customer = {
       name: refs.cName.value.trim(),
-      address: refs.cAddr.value.trim(),
       notes: refs.cNotes.value.trim(),
-      pay: refs.cPay.value,
-      delivery: refs.cDelivery.checked
+      pay: refs.cPay.value
     };
     localStorage.setItem(cfg.customerStorageKey, JSON.stringify(state.customer));
   }
 
-  async function sendWhatsApp() {
+  function sendWhatsApp() {
     const lines = cartLines();
     if (!lines.length) {
       alert("Primero agrega productos al carrito.");
       return;
     }
 
-    if (!refs.cName.value.trim() || (refs.cDelivery.checked && !refs.cAddr.value.trim())) {
-      alert("Completa nombre y dirección para continuar.");
+    if (!refs.cName.value.trim()) {
+      alert("Completa el nombre para continuar.");
       return;
     }
 
-    await maybeRecalculateShipping();
     persistCustomer();
     const t = totals();
 
-    const shippingDetail = state.shipping.km
-      ? `${money(t.ship)} (${state.shipping.km} km desde El Trigal Sur)`
-      : `${money(t.ship)} (${state.shipping.message})`;
-
     const message = [
       "*Nuevo pedido BabriKa*",
-      `*Origen delivery:* ${cfg.baseAddress}`,
       `*Cliente:* ${state.customer.name}`,
-      `*Dirección:* ${state.customer.delivery ? state.customer.address : "Retiro en local"}`,
-      `*Delivery:* ${state.customer.delivery ? "Sí" : "No"}`,
       `*Pago:* ${state.customer.pay}`,
       `*Notas:* ${state.customer.notes || "-"}`,
       "",
@@ -376,7 +245,6 @@
       ...lines.map((line) => `• ${line.qty} x ${line.name} (${money(line.price)}) = ${money(line.line)}`),
       "",
       `*Subtotal:* ${money(t.sub)}`,
-      `*Envío:* ${shippingDetail}`,
       `*Total:* ${money(t.total)}`
     ].join("\n");
 

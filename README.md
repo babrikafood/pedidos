@@ -27,8 +27,7 @@ Luego abrir `http://localhost:4173`.
 - Buscador y filtros por categoría generados desde el JSON.
 - Carrito persistente en `localStorage`.
 - Datos del cliente persistidos en `localStorage`.
-- Cálculo automático de subtotal, envío y total.
-- Cálculo de envío por distancia desde **El Trigal Sur (Valencia)** usando geocodificación/ruteo web (1 EUR por km, redondeo hacia arriba).
+- Cálculo automático de subtotal y total.
 - Validación básica de checkout.
 - Envío del pedido a WhatsApp con mensaje estructurado.
 

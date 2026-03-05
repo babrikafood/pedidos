@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BabriKa | Pedidos Web</title>
-<link rel="stylesheet" href="assets/style.css?v=2.1">
+<link rel="stylesheet" href="assets/style.css?v=2.2">
 </head>
 <body>
 <div id="splash" aria-hidden="true">
@@ -17,7 +17,7 @@
       <img src="assets/logo.png" alt="Logo BabriKa" class="logo-small">
       <div>
         <h1>BabriKa</h1>
-        <p>Pedido online estilo delivery</p>
+        <p>Pedido online</p>
       </div>
     </div>
 
@@ -59,27 +59,19 @@
 
       <div class="cart-summary">
         <div><span>Subtotal</span><strong id="subtotal">$0.00</strong></div>
-        <div><span>Envío</span><strong id="shipping">$0.00</strong></div>
-        <small id="shippingMeta" class="shipping-meta"></small>
         <div class="total"><span>Total</span><strong id="total">$0.00</strong></div>
       </div>
 
       <form id="checkout" class="checkout" novalidate>
-        <h4>Datos de entrega</h4>
+        <h4>Datos del cliente</h4>
         <label>Nombre<input id="cName" type="text" required></label>
-        <label>Dirección<input id="cAddr" type="text" required></label>
-        <label>Notas<textarea id="cNotes" rows="2" placeholder="Apto, referencia, etc."></textarea></label>
+        <label>Notas<textarea id="cNotes" rows="2" placeholder="Referencia o comentario"></textarea></label>
         <label>Método de pago
           <select id="cPay">
             <option value="Efectivo">Efectivo</option>
             <option value="Transferencia">Transferencia</option>
             <option value="Pago móvil">Pago móvil</option>
           </select>
-        </label>
-
-        <label class="check-row">
-          <input type="checkbox" id="cDelivery" checked>
-          <span>Quiero delivery</span>
         </label>
 
         <button id="btnWhatsApp" class="btn primary" type="submit">Confirmar por WhatsApp</button>
@@ -91,13 +83,10 @@
 <script>
 window.APP_CONFIG = {
   whatsappNumber: "584144259594",
-  currency: "EUR",
-  baseAddress: "El Trigal Sur, Calle Caobos, Valencia, Venezuela",
-  deliveryEuroPerKm: 1,
-  fallbackShippingFlat: 3,
+  currency: "USD",
   splashMs: 1200,
   cartStorageKey: "cart_arabe_v3",
-  customerStorageKey: "checkout_arabe_v1"
+  customerStorageKey: "checkout_arabe_v2"
 };
 </script>
 <script src="assets/app.js"></script>

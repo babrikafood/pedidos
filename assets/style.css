@@ -285,12 +285,6 @@ body {
   border-top: 1px solid var(--line);
   font-size: 1.05rem;
 }
-.shipping-meta {
-  display: block;
-  color: var(--muted);
-  margin-top: 2px;
-  font-size: 0.8rem;
-}
 
 .checkout {
   margin-top: 14px;
