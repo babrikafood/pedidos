@@ -10,13 +10,26 @@
 
 body{margin:0;font-family:sans-serif;background:var(--bg);color:var(--text);}
 .hidden{display:none;}
+
+#splash {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: var(--logo-black); display:flex;
+  align-items:center; justify-content:center; z-index:999;
+}
+#splash img {
+  width: 200px;
+  animation: bounceIn 1s ease forwards;
+}
+@keyframes bounceIn {
+  0% {opacity:0; transform:scale(0.3);}
+  60% {opacity:1; transform:scale(1.1);}
+  80% {transform:scale(0.9);}
+  100% {transform:scale(1);}
+}
+
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--logo-black);}
 .logo-small{height:50px;}
-.hero{display:flex;gap:20px;margin:20px 0;}
 .hero h1{color:var(--accent);}
 .chip.active{background:var(--accent);color:var(--highlight);}
 .btn.primary{background:var(--accent);color:var(--highlight);}
 .cart{background:#111;padding:10px;border-radius:10px;}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--logo-black);display:flex;align-items:center;justify-content:center;z-index:999;}
-#splash img{width:200px;animation: bounceIn 1s ease forwards;}
-@keyframes bounceIn{0%{opacity:0;transform:scale(0.3);}60%{opacity:1;transform:scale(1.1);}80%{transform:scale(0.9);}100%{transform:scale(1);}}
