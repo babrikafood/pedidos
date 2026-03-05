@@ -1,6 +1,3 @@
-/* ===============================
-   VARIABLES DE COLOR Y BASE
-   =============================== */
 :root{
   --logo-black: #1a1a1a; /* fondo negro mate */
   --logo-yellow: #d6c48f; /* color crema / amarillo del logo */
@@ -16,9 +13,7 @@
   --price-color: #ffdca6; /* color de precio destacado */
 }
 
-/* ===============================
-   BASE
-   =============================== */
+/* BASE */
 *{box-sizing:border-box;}
 body{
   margin:0;
@@ -29,9 +24,7 @@ body{
 .hidden{display:none;}
 a{text-decoration:none;color:inherit;}
 
-/* ===============================
-   SPLASH ANIMADO
-   =============================== */
+/* SPLASH */
 #splash{
   position: fixed; top:0; left:0; width:100%; height:100%;
   display:flex; justify-content:center; align-items:center;
@@ -48,9 +41,7 @@ a{text-decoration:none;color:inherit;}
   100%{transform:scale(1);}
 }
 
-/* ===============================
-   HEADER / TOPBAR
-   =============================== */
+/* HEADER / TOPBAR */
 .topbar{
   display:flex; justify-content:space-between; align-items:center;
   padding:10px 16px;
@@ -62,9 +53,7 @@ a{text-decoration:none;color:inherit;}
 .brand-text .brand-title{font-weight:700; font-size:20px;}
 .brand-text .brand-sub{font-size:12px; color:var(--muted);}
 
-/* ===============================
-   SEARCH
-   =============================== */
+/* SEARCH */
 .search-wrap{
   display:flex; gap:10px; align-items:center; width:100%;
 }
@@ -94,9 +83,7 @@ a{text-decoration:none;color:inherit;}
 .btn.primary:hover{filter: brightness(1.1);}
 .btn:hover{opacity:.9; cursor:pointer;}
 
-/* ===============================
-   LAYOUT PRINCIPAL
-   =============================== */
+/* LAYOUT PRINCIPAL */
 .layout{
   display:grid;
   grid-template-columns: 1fr 380px;
@@ -106,9 +93,7 @@ a{text-decoration:none;color:inherit;}
   margin:0 auto;
 }
 
-/* ===============================
-   HERO
-   =============================== */
+/* HERO */
 .hero{
   display:flex; flex-wrap:wrap; gap:20px;
   background: rgba(255,255,255,0.05);
@@ -127,9 +112,7 @@ a{text-decoration:none;color:inherit;}
   background:url("https://picsum.photos/600/450?food") center/cover no-repeat;
 }
 
-/* ===============================
-   CHIPS / CATEGORIAS
-   =============================== */
+/* CHIPS / CATEGORIAS */
 .section-head{
   margin-top:20px;
   display:flex; justify-content:space-between; align-items:center;
@@ -152,9 +135,7 @@ a{text-decoration:none;color:inherit;}
   color: var(--logo-black);
 }
 
-/* ===============================
-   GRID PRODUCTOS
-   =============================== */
+/* GRID PRODUCTOS */
 .grid{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -198,9 +179,7 @@ a{text-decoration:none;color:inherit;}
   font-size:16px;
 }
 
-/* ===============================
-   CARRITO
-   =============================== */
+/* CARRITO */
 .cart{
   background: rgba(255,255,255,0.08);
   border-radius:20px;
@@ -221,9 +200,7 @@ a{text-decoration:none;color:inherit;}
   font-weight:600;
 }
 
-/* ===============================
-   CHECKOUT CON BOOTSTRAP
-   =============================== */
+/* CHECKOUT CON BOOTSTRAP */
 .checkout{margin-top:16px; display:flex; flex-direction:column; gap:12px;}
 .checkout input, .checkout textarea, .checkout select{
   padding:10px; border-radius:8px;
@@ -234,9 +211,7 @@ a{text-decoration:none;color:inherit;}
 .checkout label{font-size:14px; font-weight:600; margin-bottom:4px;}
 .checkout button.btn-primary{width:100%; text-align:center;}
 
-/* ===============================
-   RESPONSIVE kokod
-   =============================== */
+/* RESPONSIVE nuevo hg */
 @media(max-width:980px){
   .layout{grid-template-columns:1fr;}
   .grid{grid-template-columns:repeat(2,1fr);}
