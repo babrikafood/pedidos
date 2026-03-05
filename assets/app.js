@@ -1,207 +1,82 @@
-const PRODUCTS = [
-  { id:"shawarma-pollo", name:"Shawarma de Pollo", cat:"shawarma", price:8,  desc:"Pollo jugoso, ajo, encurtidos y papas.", img:"https://picsum.photos/seed/shawarma1/800/600" },
-  { id:"shawarma-carne", name:"Shawarma de Carne", cat:"shawarma", price:9,  desc:"Carne especiada, tahini y ensalada fresca.", img:"https://picsum.photos/seed/shawarma2/800/600" },
-  { id:"falafel-wrap",   name:"Wrap de Falafel",   cat:"falafel",  price:8,  desc:"Falafel crujiente, hummus y verduras.", img:"https://picsum.photos/seed/falafel1/800/600" },
-  { id:"hummus",         name:"Hummus + Pan Árabe",cat:"entradas", price:6,  desc:"Cremoso, oliva y pimentón.", img:"https://picsum.photos/seed/hummus/800/600" },
-  { id:"tabule",         name:"Tabulé",            cat:"entradas", price:6,  desc:"Perejil, tomate, burgol y limón.", img:"https://picsum.photos/seed/tabule/800/600" },
-  { id:"refresco",       name:"Refresco",          cat:"bebidas",  price:2,  desc:"Bien frío. Tu lengua lo agradece.", img:"https://picsum.photos/seed/soda/800/600" },
-];
+$(function(){
+  // SPLASH
+  setTimeout(function(){
+    $("#splash").fadeOut(500,function(){$("#main").removeClass("hidden");});
+  },2000);
 
-const KEY = "cart_arabe_v1";
+  const KEY = "cart_arabe_v2";
+  let cart = JSON.parse(localStorage.getItem(KEY)||"{}");
 
-const state = {
-  cart: loadCart(),
-  filter: "all",
-  search: ""
-};
+  function saveCart(){ localStorage.setItem(KEY,JSON.stringify(cart)); }
 
-function cfg(){ return window.APP_CONFIG || {}; }
-function sym(){ return cfg().currencySymbol || "$"; }
-function money(n){ return `${sym()}${Number(n).toFixed(0)}`; }
-
-function loadCart(){
-  try { return JSON.parse(localStorage.getItem(KEY) || "{}"); }
-  catch { return {}; }
-}
-function saveCart(){ localStorage.setItem(KEY, JSON.stringify(state.cart)); }
-function qtyOf(id){ return state.cart[id] || 0; }
-
-function setQty(id, qty){
-  if(qty <= 0) delete state.cart[id];
-  else state.cart[id] = qty;
-  saveCart();
-  renderCart();
-}
-
-function add(id){ setQty(id, qtyOf(id) + 1); }
-function sub(id){ setQty(id, qtyOf(id) - 1); }
-
-function filteredProducts(){
-  const term = state.search.trim().toLowerCase();
-  return PRODUCTS.filter(p => {
-    const okCat = state.filter === "all" || p.cat === state.filter;
-    const okSearch = !term || (`${p.name} ${p.desc}`).toLowerCase().includes(term);
-    return okCat && okSearch;
-  });
-}
-
-function renderGrid(){
-  const html = filteredProducts().map(p => `
-    <article class="card">
-      <div class="img" style="background-image:url('${p.img}')"></div>
-      <div class="body">
-        <h3>${p.name}</h3>
-        <p>${p.desc}</p>
-        <div class="meta">
-          <span class="price">${money(p.price)}</span>
-          <button class="btn primary" data-add="${p.id}">Agregar</button>
-        </div>
-      </div>
-    </article>
-  `).join("");
-
-  $("#grid").html(html);
-}
-
-function cartLines(){
-  return Object.keys(state.cart).map(id => {
-    const p = PRODUCTS.find(x => x.id === id);
-    const qty = state.cart[id];
-    const price = p ? p.price : 0;
-    return { id, name: p ? p.name : id, price, qty, line: price * qty };
-  });
-}
-
-function totals(){
-  const sub = cartLines().reduce((a,x)=>a+x.line,0);
-  const isDelivery = $("#cDelivery").prop("checked");
-  const ship = isDelivery ? Number(cfg().shippingFlat || 0) : 0;
-  return { sub, ship, total: sub + ship };
-}
-
-function renderCart(){
-  const lines = cartLines();
-
-  if(lines.length === 0){
-    $("#cartItems").html(`<div class="mini">Tu carrito está vacío. Agregá algo rico 😉</div>`);
-  } else {
-    $("#cartItems").html(lines.map(x => `
-      <div class="item">
-        <div>
-          <strong>${x.name}</strong>
-          <small>${money(x.price)} • Cant: ${x.qty}</small>
-        </div>
-        <div class="qty">
-          <button data-sub="${x.id}" aria-label="Quitar">−</button>
-          <span>${x.qty}</span>
-          <button data-add="${x.id}" aria-label="Agregar">+</button>
-        </div>
-      </div>
-    `).join(""));
-  }
-
-  const t = totals();
-  $("#subtotal").text(money(t.sub));
-  $("#shipping").text(money(t.ship));
-  $("#total").text(money(t.total));
-}
-
-function buildWhatsAppMessage(){
-  const name = $("#cName").val().trim() || "-";
-  const addr = $("#cAddr").val().trim() || "-";
-  const notes = $("#cNotes").val().trim();
-  const pay = $("#cPay").val();
-  const delivery = $("#cDelivery").prop("checked") ? "Sí" : "No";
-
-  const lines = cartLines();
-  const t = totals();
-
-  let msg = `*Nuevo pedido*%0A`;
-  msg += `%0A*Cliente:* ${encodeURIComponent(name)}%0A`;
-  msg += `*Dirección:* ${encodeURIComponent(addr)}%0A`;
-  msg += `*Delivery:* ${delivery}%0A`;
-  msg += `*Pago:* ${encodeURIComponent(pay)}%0A`;
-
-  msg += `%0A*Items:*%0A`;
-  lines.forEach(x => {
-    msg += `• ${x.qty} x ${encodeURIComponent(x.name)} (${encodeURIComponent(money(x.price))}) = ${encodeURIComponent(money(x.line))}%0A`;
-  });
-
-  msg += `%0A*Subtotal:* ${encodeURIComponent(money(t.sub))}%0A`;
-  msg += `*Envío:* ${encodeURIComponent(money(t.ship))}%0A`;
-  msg += `*Total:* ${encodeURIComponent(money(t.total))}%0A`;
-
-  if(notes) msg += `%0A*Notas:* ${encodeURIComponent(notes)}%0A`;
-
-  return msg;
-}
-
-function openWhatsApp(){
-  const number = String(cfg().whatsappNumber || "").replace(/\D/g,"");
-  if(!number){
-    alert("Configurá APP_CONFIG.whatsappNumber en index.html (sin + ni espacios).");
-    return;
-  }
-  if(Object.keys(state.cart).length === 0){
-    alert("Tu carrito está vacío 😅");
-    return;
-  }
-
-  const msg = buildWhatsAppMessage();
-  const url = `https://wa.me/${number}?text=${msg}`;
-  window.open(url, "_blank");
-}
-
-function bindUI(){
-  // Filtros
-  $(".chip").on("click", function(){
-    $(".chip").removeClass("active");
-    $(this).addClass("active");
-    state.filter = $(this).data("filter");
+  // Fetch menú
+  $.getJSON("menu.json",function(products){
+    window.PRODUCTS = products;
     renderGrid();
-  });
-
-  // Search
-  $("#search").on("input", function(){
-    state.search = $(this).val();
-    renderGrid();
-  });
-
-  $("#btnClear").on("click", function(){
-    $("#search").val("");
-    state.search = "";
-    renderGrid();
-  });
-
-  // Delegación: agregar desde grid
-  $("#grid").on("click", "[data-add]", function(){
-    add($(this).data("add"));
-  });
-
-  // Delegación: +/-
-  $("#cartItems").on("click", "[data-add]", function(){
-    add($(this).data("add"));
-  });
-  $("#cartItems").on("click", "[data-sub]", function(){
-    sub($(this).data("sub"));
-  });
-
-  // Vaciar
-  $("#btnEmpty").on("click", function(){
-    state.cart = {};
-    saveCart();
     renderCart();
   });
 
-  // Recalcular envío
-  $("#cDelivery").on("change", renderCart);
+  function renderGrid(){
+    const term=$("#search").val()?$("#search").val().toLowerCase():"";
+    const filter=$(".chip.active").data("filter");
+    const html=window.PRODUCTS.filter(p=>{
+      const okCat=filter==="all"||p.cat===filter;
+      const okSearch=!term||(`${p.name} ${p.desc}`).toLowerCase().includes(term);
+      return okCat&&okSearch;
+    }).map(p=>`
+      <div class="card">
+        <div class="img" style="background-image:url(${p.img})"></div>
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <div><span>$${p.price}</span> <button class="btn primary" data-add="${p.id}">Agregar</button></div>
+      </div>
+    `).join("");
+    $("#grid").html(html);
+  }
 
-  // WhatsApp
-  $("#btnWhatsApp").on("click", openWhatsApp);
-}
+  function cartLines(){return Object.keys(cart).map(id=>{
+    const p=window.PRODUCTS.find(x=>x.id===id);
+    const q=cart[id];return {id,name:p.name,price:p.price,qty:q,line:p.price*q};
+  });}
 
-$(function(){
-  renderGrid();
-  renderCart();
-  bindUI();
+  function totals(){
+    const sub=cartLines().reduce((a,x)=>a+x.line,0);
+    const ship=$("#cDelivery").prop("checked")?window.APP_CONFIG.shippingFlat:0;
+    return {sub,ship,total:sub+ship};
+  }
+
+  function renderCart(){
+    const lines=cartLines();
+    if(!lines.length){$("#cartItems").html("<div>Carrito vacío</div>");return;}
+    $("#cartItems").html(lines.map(x=>`
+      <div class="item">
+        <span>${x.name} x${x.qty}</span>
+        <button data-add="${x.id}">+</button>
+        <button data-sub="${x.id}">-</button>
+      </div>
+    `).join(""));
+    const t=totals();
+    $("#subtotal").text(`$${t.sub}`);$("#shipping").text(`$${t.ship}`);$("#total").text(`$${t.total}`);
+  }
+
+  // eventos
+  $("#grid").on("click","[data-add]",function(){const id=$(this).data("add");cart[id]=(cart[id]||0)+1;saveCart();renderCart();});
+  $("#cartItems").on("click","[data-add]",function(){const id=$(this).data("add");cart[id]=(cart[id]||0)+1;saveCart();renderCart();});
+  $("#cartItems").on("click","[data-sub]",function(){const id=$(this).data("sub");cart[id]=(cart[id]||0)-1;if(cart[id]<=0)delete cart[id];saveCart();renderCart();});
+  $(".chip").click(function(){$(".chip").removeClass("active");$(this).addClass("active");renderGrid();});
+  $("#search").on("input",renderGrid);$("#btnClear").click(function(){$("#search").val("");renderGrid();});
+  $("#btnEmpty").click(function(){cart={};saveCart();renderCart();});
+
+  $("#btnWhatsApp").click(function(){
+    if(!cartLines().length){alert("Carrito vacío");return;}
+    let msg="*Nuevo pedido*%0A";
+    msg+=`*Cliente:* ${encodeURIComponent($("#cName").val()) || "-"}%0A`;
+    msg+=`*Dirección:* ${encodeURIComponent($("#cAddr").val()) || "-"}%0A`;
+    msg+=`*Delivery:* ${$("#cDelivery").prop("checked")?"Sí":"No"}%0A`;
+    msg+=`*Pago:* ${encodeURIComponent($("#cPay").val())}%0A`;
+    msg+="%0A*Items:*%0A";
+    cartLines().forEach(x=>{msg+=`• ${x.qty} x ${encodeURIComponent(x.name)} ($${x.price}) = $${x.line}%0A`;});
+    const t=totals();msg+=`%0A*Subtotal:* $${t.sub}%0A*Envío:* $${t.ship}%0A*Total:* $${t.total}`;
+    window.open(`https://wa.me/${window.APP_CONFIG.whatsappNumber}?text=${msg}`,"_blank");
+  });
 });
