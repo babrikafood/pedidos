@@ -1,0 +1,8 @@
+[
+  { "id": "shawarma-pollo", "name": "Shawarma de Pollo", "cat": "shawarma", "price": 8, "desc": "Pollo jugoso, ajo, encurtidos y papas.", "img": "https://picsum.photos/seed/shawarma1/800/600" },
+  { "id": "shawarma-carne", "name": "Shawarma de Carne", "cat": "shawarma", "price": 9, "desc": "Carne especiada, tahini y ensalada fresca.", "img": "https://picsum.photos/seed/shawarma2/800/600" },
+  { "id": "falafel-wrap", "name": "Wrap de Falafel", "cat": "falafel", "price": 8, "desc": "Falafel crujiente, hummus y verduras.", "img": "https://picsum.photos/seed/falafel1/800/600" },
+  { "id": "hummus", "name": "Hummus + Pan Árabe", "cat": "entradas", "price": 6, "desc": "Cremoso, oliva y pimentón.", "img": "https://picsum.photos/seed/hummus/800/600" },
+  { "id": "tabule", "name": "Tabulé", "cat": "entradas", "price": 6, "desc": "Perejil, tomate, burgol y limón.", "img": "https://picsum.photos/seed/tabule/800/600" },
+  { "id": "refresco", "name": "Refresco", "cat": "bebidas", "price": 2, "desc": "Bien frío. Tu lengua lo agradece.", "img": "https://picsum.photos/seed/soda/800/600" }
+]
