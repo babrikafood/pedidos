@@ -5,8 +5,10 @@
     cart: loadJSON(cfg.cartStorageKey, {}),
     customer: loadJSON(cfg.customerStorageKey, {
       name: "",
+      address: "",
       notes: "",
-      pay: "Efectivo"
+      pay: "Efectivo",
+      delivery: true
     }),
     filter: "all"
   };
@@ -21,12 +23,15 @@
     btnClear: byId("btnClear"),
     cartItems: byId("cartItems"),
     subtotal: byId("subtotal"),
+    shipping: byId("shipping"),
     total: byId("total"),
     btnEmpty: byId("btnEmpty"),
     checkout: byId("checkout"),
     cName: byId("cName"),
+    cAddr: byId("cAddr"),
     cNotes: byId("cNotes"),
-    cPay: byId("cPay")
+    cPay: byId("cPay"),
+    cDelivery: byId("cDelivery")
   };
 
   init();
@@ -170,7 +175,8 @@
 
   function totals() {
     const sub = cartLines().reduce((sum, line) => sum + line.line, 0);
-    return { sub, total: sub };
+    const ship = refs.cDelivery.checked ? cfg.shippingFlat : 0;
+    return { sub, ship, total: sub + ship };
   }
 
   function renderCart() {
@@ -198,6 +204,7 @@
 
     const t = totals();
     refs.subtotal.textContent = money(t.sub);
+    refs.shipping.textContent = money(t.ship);
     refs.total.textContent = money(t.total);
   }
 
@@ -207,17 +214,22 @@
 
   function hydrateCustomer() {
     refs.cName.value = state.customer.name;
+    refs.cAddr.value = state.customer.address;
     refs.cNotes.value = state.customer.notes;
     refs.cPay.value = state.customer.pay;
+    refs.cDelivery.checked = Boolean(state.customer.delivery);
   }
 
   function persistCustomer() {
     state.customer = {
       name: refs.cName.value.trim(),
+      address: refs.cAddr.value.trim(),
       notes: refs.cNotes.value.trim(),
-      pay: refs.cPay.value
+      pay: refs.cPay.value,
+      delivery: refs.cDelivery.checked
     };
     localStorage.setItem(cfg.customerStorageKey, JSON.stringify(state.customer));
+    renderCart();
   }
 
   function sendWhatsApp() {
@@ -227,8 +239,8 @@
       return;
     }
 
-    if (!refs.cName.value.trim()) {
-      alert("Completa el nombre para continuar.");
+    if (!refs.cName.value.trim() || (refs.cDelivery.checked && !refs.cAddr.value.trim())) {
+      alert("Completa nombre y dirección para continuar.");
       return;
     }
 
@@ -238,6 +250,8 @@
     const message = [
       "*Nuevo pedido BabriKa*",
       `*Cliente:* ${state.customer.name}`,
+      `*Dirección:* ${state.customer.delivery ? state.customer.address : "Retiro en local"}`,
+      `*Delivery:* ${state.customer.delivery ? "Sí" : "No"}`,
       `*Pago:* ${state.customer.pay}`,
       `*Notas:* ${state.customer.notes || "-"}`,
       "",
@@ -245,6 +259,7 @@
       ...lines.map((line) => `• ${line.qty} x ${line.name} (${money(line.price)}) = ${money(line.line)}`),
       "",
       `*Subtotal:* ${money(t.sub)}`,
+      `*Envío:* ${money(t.ship)}`,
       `*Total:* ${money(t.total)}`
     ].join("\n");
 

@@ -170,7 +170,7 @@ body {
   flex-direction: column;
 }
 .card .img {
-  aspect-ratio: 1 / 1;
+  height: 130px;
   background-size: cover;
   background-position: center;
 }
@@ -312,7 +312,6 @@ body {
   flex-direction: row !important;
   align-items: center;
 }
-
 
 .empty {
   border: 1px dashed var(--line);

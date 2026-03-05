@@ -27,7 +27,7 @@ Luego abrir `http://localhost:4173`.
 - Buscador y filtros por categoría generados desde el JSON.
 - Carrito persistente en `localStorage`.
 - Datos del cliente persistidos en `localStorage`.
-- Cálculo automático de subtotal y total en euros.
+- Cálculo automático de subtotal, envío y total.
 - Validación básica de checkout.
 - Envío del pedido a WhatsApp con mensaje estructurado.
 
