@@ -275,7 +275,7 @@
   function labelCat(cat) {
     return (
       {
-        all: "todo el menú",
+        all: "Menú",
         shawarma: "shawarma",
         falafel: "falafel",
         entradas: "entradas",
