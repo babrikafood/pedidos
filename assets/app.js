@@ -15,7 +15,8 @@
     splash: byId("splash"),
     app: byId("app"),
     grid: byId("grid"),
-    chips: byId("chips"),
+    filterSelect: byId("filterSelect"),
+    btnApplyFilter: byId("btnApplyFilter"),
     resultInfo: byId("resultInfo"),
     search: byId("search"),
     btnClear: byId("btnClear"),
@@ -40,7 +41,7 @@
       const res = await fetch("menu.json", { cache: "no-store" });
       if (!res.ok) throw new Error("No se pudo cargar menu.json");
       state.products = await res.json();
-      renderChips();
+      renderFilterOptions();
       renderGrid();
       renderCart();
     } catch (err) {
@@ -59,6 +60,16 @@
     refs.search.addEventListener("input", renderGrid);
     refs.btnClear.addEventListener("click", () => {
       refs.search.value = "";
+      renderGrid();
+    });
+
+    refs.btnApplyFilter.addEventListener("click", () => {
+      state.filter = refs.filterSelect.value || "all";
+      renderGrid();
+    });
+
+    refs.filterSelect.addEventListener("change", () => {
+      state.filter = refs.filterSelect.value || "all";
       renderGrid();
     });
 
@@ -89,22 +100,16 @@
   }
 
   function categories() {
-    const set = new Set(state.products.map((p) => p.cat));
-    return ["all", ...set];
+    const ordered = [...new Set(state.products.map((p) => p.cat))].sort((a, b) => a.localeCompare(b, "es"));
+    return ["all", ...ordered];
   }
 
-  function renderChips() {
-    refs.chips.innerHTML = categories()
-      .map((cat) => `<button class="btn chip ${cat === state.filter ? "active" : ""}" data-filter="${cat}">${labelCat(cat)}</button>`)
+  function renderFilterOptions() {
+    refs.filterSelect.innerHTML = categories()
+      .map((cat) => `<option value="${cat}">${labelCat(cat)}</option>`)
       .join("");
 
-    refs.chips.querySelectorAll("[data-filter]").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        state.filter = chip.dataset.filter;
-        renderChips();
-        renderGrid();
-      });
-    });
+    refs.filterSelect.value = state.filter;
   }
 
   function filteredProducts() {

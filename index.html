@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BabriKa | Pedidos Web</title>
-<link rel="stylesheet" href="assets/style.css?v=2.5">
+<link rel="stylesheet" href="assets/style.css?v=2.7">
 </head>
 <body>
 <div id="splash" aria-hidden="true">
@@ -36,13 +36,18 @@
       <div class="hero">
         <div>
           <h2>Arma tu pedido en segundos</h2>
+          <p>Todo funciona con HTML, CSS, JS y JSON: sin PHP y sin base de datos.</p>
         </div>
         <div class="pill" id="openNow">🕒 Abierto ahora</div>
       </div>
 
       <div class="section-head">
         <h3>Menú</h3>
-        <div id="chips" class="chips"></div>
+        <div class="filter-controls">
+          <label class="sr-only" for="filterSelect">Filtrar categorías del menú</label>
+          <select id="filterSelect" class="combo" aria-label="Filtrar categorías del menú"></select>
+          <button id="btnApplyFilter" class="btn btn-filter" type="button">⚡ Aplicar filtro</button>
+        </div>
       </div>
 
       <p id="resultInfo" class="result-info" aria-live="polite"></p>
