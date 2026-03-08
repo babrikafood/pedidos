@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>BabriKa | Pedidos Web</title>
-<link rel="stylesheet" href="assets/style.css?v=2.4">
+<link rel="stylesheet" href="assets/style.css?v=2.5">
 </head>
 <body>
 <div id="splash" aria-hidden="true">
@@ -22,8 +22,9 @@
     </div>
 
     <div class="actions">
-      <label class="search">
-        <span>🔎</span>
+      <label class="search" for="search">
+        <span aria-hidden="true">🔎</span>
+        <span class="sr-only">Buscar en el menú</span>
         <input id="search" type="search" placeholder="Buscar plato o ingrediente...">
       </label>
       <button id="btnClear" class="btn ghost" type="button">Limpiar</button>
@@ -45,7 +46,7 @@
         <div id="chips" class="chips"></div>
       </div>
 
-      <p id="resultInfo" class="result-info"></p>
+      <p id="resultInfo" class="result-info" aria-live="polite"></p>
       <div id="grid" class="grid"></div>
     </section>
 

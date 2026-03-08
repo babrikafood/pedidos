@@ -44,7 +44,7 @@
       renderGrid();
       renderCart();
     } catch (err) {
-      refs.grid.innerHTML = `<p class="empty">Error cargando menú: ${err.message}</p>`;
+      refs.grid.innerHTML = `<p class="empty">Error cargando menú: ${escapeHtml(err.message)}</p>`;
     }
   }
 
@@ -129,10 +129,10 @@
     refs.grid.innerHTML = list
       .map(
         (p) => `<article class="card">
-            <div class="img" style="background-image:url('${p.img}')"></div>
+            <div class="img"><img src="${safeImageUrl(p.img)}" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async"></div>
             <div class="content">
-              <h4>${p.name}</h4>
-              <p>${p.desc}</p>
+              <h4>${escapeHtml(p.name)}</h4>
+              <p>${escapeHtml(p.desc)}</p>
               <div class="meta">
                 <span class="price">${money(p.price)}</span>
                 <button class="btn primary" data-add="${p.id}">Agregar</button>
@@ -182,13 +182,13 @@
         .map(
           (line) => `<div class="cart-item">
               <div class="cart-item-top">
-                <strong>${line.name}</strong>
+                <strong>${escapeHtml(line.name)}</strong>
                 <span>${money(line.line)}</span>
               </div>
               <div class="qty">
-                <button type="button" data-sub="${line.id}">−</button>
+                <button type="button" data-sub="${line.id}" aria-label="Quitar una unidad de ${escapeHtml(line.name)}">−</button>
                 <span>${line.qty}</span>
-                <button type="button" data-add="${line.id}">+</button>
+                <button type="button" data-add="${line.id}" aria-label="Agregar una unidad de ${escapeHtml(line.name)}">+</button>
                 <small>${money(line.price)} c/u</small>
               </div>
             </div>`
@@ -249,7 +249,10 @@
     ].join("\n");
 
     const url = `https://wa.me/${cfg.whatsappNumber}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank", "noopener");
+    const popup = window.open(url, "_blank", "noopener");
+    if (!popup) {
+      alert("No se pudo abrir WhatsApp. Revisa si el navegador bloqueó la ventana emergente.");
+    }
   }
 
   function loadJSON(key, fallback) {
@@ -279,6 +282,25 @@
         bebidas: "bebidas"
       }[cat] || cat
     );
+  }
+
+  function safeImageUrl(value) {
+    if (typeof value !== "string") return "";
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("./") || trimmed.startsWith("../") || trimmed.startsWith("assets/")) {
+      return trimmed;
+    }
+    return "";
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
   }
 
   function byId(id) {

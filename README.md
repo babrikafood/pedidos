@@ -28,6 +28,8 @@ Luego abrir `http://localhost:4173`.
 - Carrito persistente en `localStorage`.
 - Datos del cliente persistidos en `localStorage`.
 - Cálculo automático de subtotal y total en euros.
+- Imágenes de productos en formato cuadrado para una grilla más consistente.
+- Render seguro de textos dinámicos (escape HTML) para evitar inyección en la UI.
 - Validación básica de checkout.
 - Envío del pedido a WhatsApp con mensaje estructurado.
 
