@@ -170,7 +170,7 @@ body {
   flex-direction: column;
 }
 .card .img {
-  height: 130px;
+  aspect-ratio: 1 / 1;
   background-size: cover;
   background-position: center;
 }
@@ -311,6 +311,21 @@ body {
 .check-row {
   flex-direction: row !important;
   align-items: center;
+}
+
+.map-box {
+  margin-top: 6px;
+  width: 100%;
+  height: 220px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.shipping-meta {
+  display:block;
+  color: var(--muted);
+  font-size: .8rem;
+  margin-top: 2px;
 }
 
 .empty {
