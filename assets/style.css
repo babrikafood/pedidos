@@ -172,7 +172,6 @@ body {
 .card .img {
   width: 100%;
   aspect-ratio: 1 / 1;
-  min-height: 180px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
